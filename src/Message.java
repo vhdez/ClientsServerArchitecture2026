@@ -12,17 +12,16 @@ public class Message implements Serializable {
     // 3: STOP
     String text;
     String to;
-    //String from;
-    //Integer to;
-    //Integer from;
+    String from;
     //LocalDate timeStamp;
     //Media voice;
     //Image picture;
 
-    public Message(Integer version, Integer mode, String text, String to) {
+    public Message(Integer version, Integer mode, String text, String from, String to) {
         this.version = version;
         this.mode = mode;
         this.text = text;
+        this.from = from;
         this.to = to;
     }
 
@@ -58,6 +57,14 @@ public class Message implements Serializable {
         this.to = to;
     }
 
+    public String getFrom() {
+        return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
     @Override
     public String toString() {
         return "Message{" +
@@ -65,6 +72,7 @@ public class Message implements Serializable {
                 ", mode=" + mode +
                 ", text='" + text + '\'' +
                 ", to='" + to + '\'' +
+                ", from='" + from + '\'' +
                 '}';
     }
 }

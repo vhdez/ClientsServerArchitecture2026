@@ -1,7 +1,4 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
 public class ClientCommunication implements Runnable {
@@ -14,23 +11,29 @@ public class ClientCommunication implements Runnable {
     @Override
     public void run() {
         try {
-            InputStream myInput = theSocket.getInputStream();
-            InputStreamReader myInputReader = new InputStreamReader(myInput);
-            BufferedReader myReader = new BufferedReader(myInputReader);
-            //        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            ObjectInputStream myObjInput = new ObjectInputStream(theSocket.getInputStream());
+            ObjectOutputStream myObjOutput = new ObjectOutputStream(theSocket.getOutputStream());
+
             int messageNum = 1;
             while (true) {
-                String newMessage = myReader.readLine();
+                Message newMessage = (Message)myObjInput.readObject();
                 if (newMessage != null) {
                     System.out.println(messageNum + " Client said: " + newMessage);
                     messageNum = messageNum + 1;
+                    if (newMessage.mode == 1) {
+                        Message response = new Message(1,1,"Welcome " + newMessage.from, "SERVER", newMessage.from);
+                        myObjOutput.writeObject(response);
+                    }
                 } else {
                     System.out.println(messageNum + " Client said NOTHING");
                 }
             }
         } catch (IOException ex) {
             System.out.println("Socket broke:" + ex);
+        } catch (ClassNotFoundException ex) {
+            System.out.println("readObject failed:" + ex);
         }
+
     }
 }
 
