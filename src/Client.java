@@ -9,8 +9,12 @@ public class Client {
             Socket ourSocket = new Socket("127.0.0.1", 2000);
             OutputStream myOut = ourSocket.getOutputStream();
             PrintWriter myprintOut = new PrintWriter(myOut);
-            myprintOut.println("Hi it's me!");
-            myprintOut.println("Hi honey, I'm home!");
+
+            Message message1 = new Message(1,1,"","Mr. H");
+            Message message2 = new Message(1,2,"Wassup?","Mr. H");
+            Message message3 = new Message(1,3,"","Mr. H");
+
+            myprintOut.println(message1);
             myprintOut.flush();
         } catch (Exception ex) {
             System.out.println("Socket failed: " + ex);
