@@ -10,7 +10,8 @@ public class ServerConnector implements Runnable {
             while (true) {
                 System.out.println("Server (first program) at 10.69.62.35 port 2000");
                 Socket newSocket = myServerSocket.accept();
-                ClientCommunication newClient = new ClientCommunication(newSocket);
+                CommunicationOut.allSockets.add(newSocket);
+                CommunicationIn newClient = new CommunicationIn(newSocket);
                 Thread perClientThread = new Thread(newClient);
                 perClientThread.start();
             }

@@ -4,6 +4,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
+
+    public static AlexQueue theQueue = new AlexQueue();
+
     public static void main(String[] args) {
         try {
             // Connect to server running on SAME 127.0.0.1 computer
