@@ -12,7 +12,9 @@ public class CommunicationIn implements Runnable {
     public void run() {
         try {
             ObjectInputStream myObjInput = new ObjectInputStream(theSocket.getInputStream());
+            // InputStream MUST be created BEFORE OutputStream!!!!!!
             ObjectOutputStream myObjOutput = new ObjectOutputStream(theSocket.getOutputStream());
+            Server.allConnections.add(myObjOutput);
 
             int messageNum = 1;
             boolean stayConnected = true;
@@ -41,9 +43,10 @@ public class CommunicationIn implements Runnable {
                 }
             }
         } catch (IOException ex) {
-            System.out.println("Socket broke:" + ex);
+            //ex.printStackTrace();
+            System.out.println("CommunicationIn: Socket broke " + ex);
         } catch (ClassNotFoundException ex) {
-            System.out.println("readObject failed:" + ex);
+            System.out.println("CommunicationIn: readObject failed:" + ex);
         //} catch (InterruptedException ex) {
         //    System.out.println("Thread interrupted:" + ex);
         }
