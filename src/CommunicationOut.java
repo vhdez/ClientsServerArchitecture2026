@@ -16,12 +16,15 @@ public class CommunicationOut implements Runnable {
             System.out.println("CommunicationOut got: " + message);
             // WRITE TO SOCKET
             try {
-                for (ObjectOutputStream eachConnection : Server.allConnections) {
+                for (CommunicationConnection eachConnection : Server.allConnections) {
                     //OutputStream myOut = eachSocket.getOutputStream();
                     //ObjectOutputStream myObjOut = new ObjectOutputStream(myOut);
-                    eachConnection.writeObject(message);
-                    eachConnection.flush();
-                    System.out.println("CommunicationOut wrote: " + message);
+                    // check if message.to matches socket's name
+                    if (message.to.equalsIgnoreCase("ALL") || message.to.equalsIgnoreCase(eachConnection.getName())) {
+                        eachConnection.outStream.writeObject(message);
+                        eachConnection.outStream.flush();
+                        System.out.println("CommunicationOut wrote: " + message);
+                    }
                 }
             } catch (IOException e) {
                 System.out.println("CommunicationOut failed: " + e);
