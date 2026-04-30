@@ -13,23 +13,19 @@ public class CommunicationOut implements Runnable {
             while (message == null) {
                 message = Server.theQueue.get();
             }
-            System.out.println("CommunicationOut got: " + message);
             // WRITE TO SOCKET
-            try {
-                for (CommunicationConnection eachConnection : Server.allConnections) {
-                    //OutputStream myOut = eachSocket.getOutputStream();
-                    //ObjectOutputStream myObjOut = new ObjectOutputStream(myOut);
+            for (CommunicationConnection eachConnection : Server.allConnections) {
+                try {
                     // check if message.to matches socket's name
                     if (message.to.equalsIgnoreCase("ALL") || message.to.equalsIgnoreCase(eachConnection.getName())) {
-                        eachConnection.outStream.writeObject(message);
-                        eachConnection.outStream.flush();
-                        System.out.println("CommunicationOut wrote: " + message);
+                        eachConnection.getOutStream().writeObject(message);
+                        eachConnection.getOutStream().flush();
+                        System.out.println("CommunicationOut to " + eachConnection.getName() + ": " + message);
                     }
+                } catch (IOException e) {
+                    System.out.println("CommunicationOut to " + eachConnection.getName() + " failed: " + e);
                 }
-            } catch (IOException e) {
-                System.out.println("CommunicationOut failed: " + e);
             }
         }
-
     }
 }

@@ -1,49 +1,49 @@
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    public static AlexQueue theQueue = new AlexQueue();
+    static boolean stayConnected = true;
 
     public static void main(String[] args) {
         try {
             // Connect to server running on SAME 127.0.0.1 computer
-            Socket ourSocket = new Socket("127.0.0.1", 2000);
+            Socket ourSocket = new Socket("127.0.0.1", 12345);
 
-            OutputStream myOut = ourSocket.getOutputStream();
-            ObjectOutputStream myObjOut = new ObjectOutputStream(myOut);
-
-            CommunicationConnection newConnection = new CommunicationConnection(null, ourSocket,null,myObjOut);
-
-            CommunicationIn myCommunicationIn = new CommunicationIn(newConnection);
+            // Client MUST create InputStream BEFORE OutputStream!!!!!!
+            ObjectOutputStream myObjOutput = new ObjectOutputStream(ourSocket.getOutputStream());
+            ObjectInputStream myObjInput = new ObjectInputStream(ourSocket.getInputStream());
+            CommunicationConnection newConnection = new CommunicationConnection("Mr. H",ourSocket,myObjInput,myObjOutput);
+            CommunicationIn myCommunicationIn = new CommunicationIn(newConnection, false);
             Thread communicationInThread = new Thread(myCommunicationIn);
             communicationInThread.start();
 
             Message message1 = new Message(1,1,"","Mr. H", "SERVER");
-            myObjOut.writeObject(message1);
-            myObjOut.flush();
+            myObjOutput.writeObject(message1);
+            myObjOutput.flush();
 
-            boolean stayConnected = true;
-            while (stayConnected) {
-                Scanner inputTextScanner = new Scanner(System.in);
+            Scanner inputTextScanner = new Scanner(System.in);
+            boolean keepScanning = true;
+            while (keepScanning) {
                 System.out.print("Type your message: ");
                 String theText = inputTextScanner.nextLine();
                 if (theText.equalsIgnoreCase("STOP")) {
-                    stayConnected = false;
+                    keepScanning = false;
+                } else {
+                    Message newMessage = new Message(1, 2, theText, "Mr. H", "ALL");
+                    myObjOutput.writeObject(newMessage);
+                    myObjOutput.flush();
                 }
-                Message newMessage = new Message(1, 2, theText, "Mr. H", "?");
-                myObjOut.writeObject(newMessage);
-                myObjOut.flush();
             }
 
             Message message3 = new Message(1,3,"","Mr. H", "SERVER");
-            myObjOut.writeObject(message3);
-            myObjOut.flush();
-
+            myObjOutput.writeObject(message3);
+            myObjOutput.flush();
+            stayConnected = false;
         } catch (Exception ex) {
             System.out.println("Socket failed: " + ex);
         }
+        System.out.println("Client.main DONE");
     }
 }

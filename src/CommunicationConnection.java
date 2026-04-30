@@ -3,12 +3,13 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class CommunicationConnection {
-    String name;
-    Socket socket;
-    ObjectInputStream inStream;
-    ObjectOutputStream outStream;
+    private String name;
+    private Socket socket;
+    private ObjectInputStream inStream;
+    private ObjectOutputStream outStream;
 
     public CommunicationConnection(String name, Socket socket, ObjectInputStream inStream, ObjectOutputStream outStream) {
+        System.out.println("Connected to: " + socket.getInetAddress() + ":" + socket.getPort());
         this.name = name;
         this.socket = socket;
         this.inStream = inStream;
@@ -20,6 +21,7 @@ public class CommunicationConnection {
     }
 
     public void setName(String name) {
+        System.out.println("Connection " + socket.getInetAddress() + ":" + socket.getPort() + " is client: " + name);
         this.name = name;
     }
 
