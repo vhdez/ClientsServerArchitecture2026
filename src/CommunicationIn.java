@@ -16,15 +16,15 @@ public class CommunicationIn implements Runnable {
             try {
                 newMessage = (Message)myConnection.getInStream().readObject();
             } catch (Exception ex) {
-                System.out.println("CommunicationIn: Client " + myConnection.getName() + " failure: " + ex);
+                System.out.println("CommunicationIn failed connection with:" + myConnection.getName() + ": " + ex);
             }
 
             if (newMessage != null) {
                 if (!isServer) {
-                    System.out.println("CommunicationIn Client: " + newMessage);
+                    System.out.println("CommunicationIn: " + newMessage);
                     continue;
                 }
-                System.out.println("CommunicationIn: " + myConnection.getName() + " said: " + newMessage);
+                System.out.println("CommunicationIn from: " + myConnection.getName() + ": " + newMessage);
                 if (newMessage.mode == 1) {
                     // START
                     // associate FROM name with its socket
@@ -35,7 +35,7 @@ public class CommunicationIn implements Runnable {
                     newMessage = newMessage;
                 } else if (newMessage.mode == 3) {
                     // STOP
-                    newMessage = new Message(1,3,"SERVER Goodbye: " + newMessage.from, "SERVER", newMessage.from);
+                    newMessage = new Message(1,3,"Goodbye: " + newMessage.from, "SERVER", newMessage.from);
                     stayConnected = false;
                 }
                 boolean putSuccess  = Server.theQueue.put(newMessage);
@@ -45,7 +45,7 @@ public class CommunicationIn implements Runnable {
             }
         }
 
-        System.out.println("CommunicationIn: " + myConnection.getName() + " disconnected!");
+        System.out.println("CommunicationIn bye: " + myConnection.getName());
     }
 }
 

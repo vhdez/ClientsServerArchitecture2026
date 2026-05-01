@@ -17,13 +17,13 @@ public class CommunicationOut implements Runnable {
                     if (message.to.equalsIgnoreCase("ALL") || message.to.equalsIgnoreCase(eachConnection.getName())) {
                         eachConnection.getOutStream().writeObject(message);
                         eachConnection.getOutStream().flush();
-                        System.out.println("CommunicationOut to " + eachConnection.getName() + ": " + message);
+                        System.out.println("CommunicationOut  to: " + eachConnection.getName() + ": " + message);
                     }
                     if (message.to.equalsIgnoreCase(eachConnection.getName()) && message.getMode() == 3){
                         connectionsToDisconnect.add(eachConnection);
                     }
                 } catch (IOException e) {
-                    System.out.println("CommunicationOut to " + eachConnection.getName() + " failed: " + e);
+                    System.out.println("CommunicationOut failed connection to: " + eachConnection.getName() + ": " + e);
                 }
             }
             for (CommunicationConnection disconnectedConnection : connectionsToDisconnect) {
