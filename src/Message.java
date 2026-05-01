@@ -1,7 +1,4 @@
-import javax.print.attribute.standard.Media;
-import java.awt.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 public class Message implements Serializable {
     private static final long serialVersionUID = 1234567L;

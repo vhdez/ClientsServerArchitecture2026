@@ -1,4 +1,3 @@
-import java.io.*;
 
 public class CommunicationIn implements Runnable {
     CommunicationConnection myConnection;
@@ -12,7 +11,7 @@ public class CommunicationIn implements Runnable {
     @Override
     public void run() {
         boolean stayConnected = true;
-        while (stayConnected) {
+        while (stayConnected && !Thread.currentThread().isInterrupted()) {
             Message newMessage = null;
             try {
                 newMessage = (Message)myConnection.getInStream().readObject();
@@ -23,7 +22,6 @@ public class CommunicationIn implements Runnable {
             if (newMessage != null) {
                 if (!isServer) {
                     System.out.println("CommunicationIn Client: " + newMessage);
-                    stayConnected = Client.stayConnected;
                     continue;
                 }
                 System.out.println("CommunicationIn: " + myConnection.getName() + " said: " + newMessage);
@@ -37,8 +35,7 @@ public class CommunicationIn implements Runnable {
                     newMessage = newMessage;
                 } else if (newMessage.mode == 3) {
                     // STOP
-                    //newMessage = new Message(1,3,"SERVER Goodbye: " + newMessage.from, "SERVER", newMessage.from);
-                    Server.allConnections.remove(myConnection);
+                    newMessage = new Message(1,3,"SERVER Goodbye: " + newMessage.from, "SERVER", newMessage.from);
                     stayConnected = false;
                 }
                 boolean putSuccess  = Server.theQueue.put(newMessage);

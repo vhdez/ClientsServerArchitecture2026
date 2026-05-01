@@ -1,18 +1,15 @@
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.SocketException;
 import java.util.ArrayList;
 
 public class CommunicationOut implements Runnable {
     public void run() {
         // GET
-        while (true) {
+        while (!Thread.currentThread().isInterrupted()) {
             Message message = Server.theQueue.get();
             while (message == null) {
                 message = Server.theQueue.get();
             }
+            ArrayList<CommunicationConnection> connectionsToDisconnect = new ArrayList<>();
             // WRITE TO SOCKET
             for (CommunicationConnection eachConnection : Server.allConnections) {
                 try {
@@ -22,9 +19,15 @@ public class CommunicationOut implements Runnable {
                         eachConnection.getOutStream().flush();
                         System.out.println("CommunicationOut to " + eachConnection.getName() + ": " + message);
                     }
+                    if (message.to.equalsIgnoreCase(eachConnection.getName()) && message.getMode() == 3){
+                        connectionsToDisconnect.add(eachConnection);
+                    }
                 } catch (IOException e) {
                     System.out.println("CommunicationOut to " + eachConnection.getName() + " failed: " + e);
                 }
+            }
+            for (CommunicationConnection disconnectedConnection : connectionsToDisconnect) {
+                Server.allConnections.remove(disconnectedConnection);
             }
         }
     }

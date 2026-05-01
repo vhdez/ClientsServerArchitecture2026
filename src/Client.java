@@ -4,8 +4,6 @@ import java.net.Socket;
 import java.util.Scanner;
 
 public class Client {
-    static boolean stayConnected = true;
-
     public static void main(String[] args) {
         try {
             // Connect to server running on SAME 127.0.0.1 computer
@@ -40,7 +38,7 @@ public class Client {
             Message message3 = new Message(1,3,"","Mr. H", "SERVER");
             myObjOutput.writeObject(message3);
             myObjOutput.flush();
-            stayConnected = false;
+            communicationInThread.interrupt();
         } catch (Exception ex) {
             System.out.println("Socket failed: " + ex);
         }

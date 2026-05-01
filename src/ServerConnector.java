@@ -1,8 +1,6 @@
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -11,7 +9,7 @@ public class ServerConnector implements Runnable {
     public void run() {
         try {
             ServerSocket myServerSocket = new ServerSocket(12345);
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 System.out.println("Server ready at port: " + myServerSocket.getLocalPort());
                 Socket newSocket = myServerSocket.accept();
 

@@ -1,7 +1,4 @@
-import java.io.*;
 import java.util.ArrayList;
-import java.util.Queue;
-import java.util.Stack;
 
 public class Server {
     public static AlexQueue theQueue = new AlexQueue();
